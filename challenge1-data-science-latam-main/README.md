@@ -50,6 +50,8 @@ pip install pandas matplotlib
 4. Ejecuta cada celda del notebook paso a paso.
 5. ¡Explora los resultados y gráficos! 🎉
 
+---
+
 ## ✨ Aprendizajes
 Este fue mi primer análisis de datos usando Python y me ayudó mucho a entender cómo trabajar con datos reales, agrupar información, calcular promedios y crear gráficos. Me gustó mucho y quiero seguir aprendiendo. 😊
 
