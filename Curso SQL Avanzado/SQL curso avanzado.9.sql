@@ -1,0 +1,137 @@
+USE jugos_ventas;
+
+SELECT 
+	P.SABOR, 
+    Ifa.CANTIDAD, 
+    F.FECHA_VENTA
+FROM tabla_de_productos P
+INNER JOIN
+items_facturas Ifa 
+ON P.CODIGO_DEL_PRODUCTO = Ifa.CODIGO_DEL_PRODUCTO
+INNER JOIN
+facturas F 
+ON F.NUMERO = Ifa.NUMERO;
+
+/* CANTIDAD VENDIDA POR SABOR AÑO 2016*/
+SELECT 
+	P.SABOR, 
+    SUM(Ifa.CANTIDAD) AS CANTIDAD_TOTAL, 
+    YEAR(F.FECHA_VENTA) AS AÑO
+FROM tabla_de_productos P
+INNER JOIN
+items_facturas Ifa 
+ON P.CODIGO_DEL_PRODUCTO = Ifa.CODIGO_DEL_PRODUCTO
+INNER JOIN
+facturas F 
+ON F.NUMERO = Ifa.NUMERO
+WHERE YEAR(F.FECHA_VENTA)  = 2016
+GROUP BY
+	P.SABOR, 
+    YEAR(F.FECHA_VENTA)
+ORDER BY SUM(Ifa.CANTIDAD) DESC;
+
+/* CANODAD TOTAL VENDIDA*/
+SELECT 
+    SUM(Ifa.CANTIDAD) AS CANTIDAD_TOTAL, 
+    YEAR(F.FECHA_VENTA) AS AÑO
+FROM tabla_de_productos P
+INNER JOIN
+items_facturas Ifa 
+ON P.CODIGO_DEL_PRODUCTO = Ifa.CODIGO_DEL_PRODUCTO
+INNER JOIN
+facturas F 
+ON F.NUMERO = Ifa.NUMERO
+WHERE YEAR(F.FECHA_VENTA)  = 2016
+GROUP BY
+    YEAR(F.FECHA_VENTA)
+ORDER BY SUM(Ifa.CANTIDAD) DESC;
+
+
+SELECT 
+    *
+FROM (
+    SELECT 
+        P.SABOR, 
+        SUM(Ifa.CANTIDAD) AS CANTIDAD_TOTAL, 
+        YEAR(F.FECHA_VENTA) AS AÑO
+    FROM 
+        tabla_de_productos P
+    INNER JOIN 
+        items_facturas Ifa 
+        ON P.CODIGO_DEL_PRODUCTO = Ifa.CODIGO_DEL_PRODUCTO
+    INNER JOIN 
+        facturas F 
+        ON F.NUMERO = Ifa.NUMERO
+    WHERE 
+        YEAR(F.FECHA_VENTA) = 2016
+    GROUP BY 
+        P.SABOR, 
+        YEAR(F.FECHA_VENTA)
+    ORDER BY 
+        SUM(Ifa.CANTIDAD) DESC
+) AS VENTAS_SABOR
+INNER JOIN (
+    SELECT 
+        SUM(Ifa.CANTIDAD) AS CANTIDAD_TOTAL, 
+        YEAR(F.FECHA_VENTA) AS AÑO
+    FROM 
+        tabla_de_productos P
+    INNER JOIN 
+        items_facturas Ifa 
+        ON P.CODIGO_DEL_PRODUCTO = Ifa.CODIGO_DEL_PRODUCTO
+    INNER JOIN 
+        facturas F 
+        ON F.NUMERO = Ifa.NUMERO
+    WHERE 
+        YEAR(F.FECHA_VENTA) = 2016
+    GROUP BY 
+        YEAR(F.FECHA_VENTA)
+) AS VENTA_TOTAL
+    ON VENTA_TOTAL.AÑO = VENTAS_SABOR.AÑO;
+    
+    
+SELECT 
+    VENTAS_SABOR.SABOR, 
+    VENTAS_SABOR.AÑO, 
+    VENTAS_SABOR.CANTIDAD_TOTAL, 
+    CONCAT(ROUND((VENTAS_SABOR.CANTIDAD_TOTAL/VENTA_TOTAL.CANTIDAD_TOTAL) * 100,2), ' %') AS PORCENTAJE
+FROM (
+    SELECT 
+        P.SABOR, 
+        SUM(Ifa.CANTIDAD) AS CANTIDAD_TOTAL, 
+        YEAR(F.FECHA_VENTA) AS AÑO
+    FROM 
+        tabla_de_productos P
+    INNER JOIN 
+        items_facturas Ifa 
+        ON P.CODIGO_DEL_PRODUCTO = Ifa.CODIGO_DEL_PRODUCTO
+    INNER JOIN 
+        facturas F 
+        ON F.NUMERO = Ifa.NUMERO
+    WHERE 
+        YEAR(F.FECHA_VENTA) = 2016
+    GROUP BY 
+        P.SABOR, 
+        YEAR(F.FECHA_VENTA)
+    ORDER BY 
+        SUM(Ifa.CANTIDAD) DESC
+) AS VENTAS_SABOR
+INNER JOIN (
+    SELECT 
+        SUM(Ifa.CANTIDAD) AS CANTIDAD_TOTAL, 
+        YEAR(F.FECHA_VENTA) AS AÑO
+    FROM 
+        tabla_de_productos P
+    INNER JOIN 
+        items_facturas Ifa 
+        ON P.CODIGO_DEL_PRODUCTO = Ifa.CODIGO_DEL_PRODUCTO
+    INNER JOIN 
+        facturas F 
+        ON F.NUMERO = Ifa.NUMERO
+    WHERE 
+        YEAR(F.FECHA_VENTA) = 2016
+    GROUP BY 
+        YEAR(F.FECHA_VENTA)
+) AS VENTA_TOTAL
+    ON VENTA_TOTAL.AÑO = VENTAS_SABOR.AÑO
+ORDER BY VENTAS_SABOR.CANTIDAD_TOTAL DESC;

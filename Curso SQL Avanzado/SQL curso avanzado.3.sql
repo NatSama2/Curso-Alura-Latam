@@ -1,0 +1,62 @@
+USE jugos_ventas;
+
+SELECT * FROM facturas;
+
+SELECT * FROM tabla_de_clientes;
+
+SELECT * FROM tabla_de_productos
+WHERE SABOR = 'Mango' AND TAMANO = '470 ml';
+
+SELECT * FROM tabla_de_productos
+WHERE SABOR = 'Mango' OR TAMANO = '470 ml';
+
+SELECT * FROM tabla_de_productos
+WHERE NOT SABOR = 'Mango' OR TAMANO = '470 ml';
+
+SELECT * FROM tabla_de_productos
+WHERE SABOR IN ('Mango', 'Uva');
+
+SELECT * FROM tabla_de_productos
+WHERE SABOR LIKE '%Manzana'
+AND ENVASE = 'Botella PET';
+
+SELECT ENVASE, TAMANO FROM tabla_de_productos;
+
+SELECT DISTINCT ENVASE, TAMANO FROM tabla_de_productos;
+
+SELECT DISTINCT ENVASE, TAMANO, SABOR FROM tabla_de_productos
+WHERE SABOR = 'Naranja';
+
+SELECT * FROM tabla_de_productos
+LIMIT 5;
+
+SELECT * FROM tabla_de_productos
+LIMIT 5,4;
+
+SELECT * FROM tabla_de_productos
+ORDER BY PRECIO_DE_LISTA DESC;
+
+SELECT * FROM tabla_de_productos
+ORDER BY ENVASE DESC, NOMBRE_DEL_PRODUCTO ASC;
+
+SELECT ESTADO, LIMITE_DE_CREDITO
+FROM tabla_de_clientes;
+
+SELECT ESTADO, SUM(LIMITE_DE_CREDITO) AS LIMITE_TOTAL
+FROM tabla_de_clientes GROUP BY ESTADO;
+
+SELECT ENVASE, MAX(PRECIO_DE_LISTA) AS PRECIO_MAXIMO
+FROM tabla_de_productos GROUP BY ENVASE;
+
+SELECT ENVASE, COUNT(*) AS TODO
+FROM tabla_de_productos GROUP BY ENVASE;
+
+SELECT BARRIO, SUM(LIMITE_DE_CREDITO) AS LIMITE
+FROM tabla_de_clientes GROUP BY BARRIO
+ORDER BY (LIMITE) ASC;
+
+SELECT BARRIO, SUM(LIMITE_DE_CREDITO) AS LIMITE
+FROM tabla_de_clientes 
+WHERE CIUDAD = 'CIUDAD DE MÉXICO'
+GROUP BY BARRIO
+ORDER BY (LIMITE) ASC;
